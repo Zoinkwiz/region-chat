@@ -10,9 +10,14 @@ repositories {
 	mavenCentral()
 }
 
-def runeLiteVersion = '1.7.5'
+def runeLiteVersion = '1.7.19'
 
 dependencies {
+    implementation('io.ably:ably-java:1.2.6')
+            {
+                exclude group: 'com.google.code.gson'
+            }
+
 	compileOnly group: 'net.runelite', name:'client', version: runeLiteVersion
 
 	compileOnly 'org.projectlombok:lombok:1.18.20'
