@@ -13,7 +13,7 @@ repositories {
 def runeLiteVersion = '1.7.19'
 
 dependencies {
-    implementation('io.ably:ably-java:1.2.6')
+    implementation('io.ably:ably-java:1.2.5')
             {
                 exclude group: 'com.google.code.gson'
             }
