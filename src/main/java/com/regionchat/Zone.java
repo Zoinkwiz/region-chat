@@ -69,11 +69,9 @@ public class Zone
 
 	public Zone(int regionID)
 	{
-		int regionX = (regionID >> 8) & 0xff;
-		int regionY = regionID & 0xff;
-		minX = regionX >> 6;
+		minX = ((regionID >> 8) & 0xFF) << 6;
 		maxX = minX + REGION_SIZE;
-		minY = regionY >> 6;
+		minY = (regionID & 0xFF) << 6;
 		maxY = minY + REGION_SIZE;
 	}
 

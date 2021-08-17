@@ -28,6 +28,8 @@ import com.google.inject.Provides;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +42,7 @@ import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.VarbitChanged;
+import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
@@ -71,6 +74,7 @@ public class RegionChatPlugin extends Plugin
 	@Override
 	protected void startUp() throws Exception
 	{
+		initRegions();
 		ablyManager.startConnection();
 	}
 
@@ -94,7 +98,17 @@ public class RegionChatPlugin extends Plugin
 
 		for (Region region : Region.values())
 		{
-			if (region.getZones().stream().anyMatch((zone) -> zone.contains(worldPoint)))
+			boolean validRegion = false;
+			try
+			{
+				validRegion = (boolean) regionsToConfigs.get(region).call();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+
+			if (validRegion && region.getZones().stream().anyMatch((zone) -> zone.contains(worldPoint)))
 			{
 				foundRegion = true;
 				String channelName = "";
@@ -145,7 +159,7 @@ public class RegionChatPlugin extends Plugin
 			return;
 		}
 
-		ablyManager.updateMessages(cleanedName, cleanedMessage);
+		ablyManager.tryUpdateMessages(cleanedName, cleanedMessage);
 		ablyManager.publishMessage(cleanedMessage);
 	}
 
@@ -153,5 +167,18 @@ public class RegionChatPlugin extends Plugin
 	RegionChatConfig provideConfig(ConfigManager configManager)
 	{
 		return configManager.getConfig(RegionChatConfig.class);
+	}
+
+	@Getter
+	private final Map<Region, Callable> regionsToConfigs = new HashMap<>();
+
+	private void initRegions()
+	{
+		regionsToConfigs.put(Region.BARBARIAN_FISHING, config::barbFishingBaRegion);
+		regionsToConfigs.put(Region.ZEAH_RC, config::zeahRcRegion);
+		regionsToConfigs.put(Region.TEMPOROSS, config::temporossRegion);
+		regionsToConfigs.put(Region.MOTHERLODE_MINE, config::motherlodeMineRegion);
+		regionsToConfigs.put(Region.ZALCANO, config::zalcanoRegion);
+		regionsToConfigs.put(Region.SEPULCHRE, config::sepulchreRegion);
 	}
 }

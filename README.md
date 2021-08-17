@@ -6,6 +6,10 @@ This plugin is for you! This plugin ensures that your chat will reach one anothe
 
 * Barbarian Fishing south of Barbarian Outpost
 * The Tempoross Island
+* Zeah Runecrafting area
+* Motherlode mine
+* Sepulchre
+* Zalcano
 
 ## How does this work?
 

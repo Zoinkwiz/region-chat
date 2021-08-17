@@ -38,6 +38,7 @@ import io.ably.lib.types.ErrorInfo;
 import io.ably.lib.types.Message;
 import java.awt.Color;
 import java.util.HashMap;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
@@ -54,7 +55,9 @@ public class AblyManager
 {
 	private final Client client;
 
-	private final HashMap<String, String> previousMessages = new HashMap<>();
+	private final Gson gson = new Gson();
+
+	private final Map<String, String> previousMessages = new HashMap<>();
 
 	private final String CHANNEL_NAME_PREFIX = "regionchat";
 
@@ -65,7 +68,6 @@ public class AblyManager
 
 	private final RegionChatConfig config;
 
-	// Global broadcasts
 	private AblyRealtime ablyRealtime;
 	private Channel ablyRegionChannel;
 
@@ -95,16 +97,19 @@ public class AblyManager
 			return;
 		}
 
+		if (ablyRegionChannel == null)
+		{
+			return;
+		}
+
 		try
 		{
 			JsonObject msg = io.ably.lib.util.JsonUtils.object()
 				.add("symbol", getAccountIcon())
 				.add("username", client.getLocalPlayer().getName())
 				.add("message", message).toJson();
-			if (config.sendToRegionChat())
-			{
-				ablyRegionChannel.publish("event", msg);
-			}
+
+			ablyRegionChannel.publish("event", msg);
 		}
 		catch (AblyException err)
 		{
@@ -122,49 +127,44 @@ public class AblyManager
 
 	private void handleAblyMessage(Message message, Color color)
 	{
-		if (client.getGameState() == GameState.LOGGED_IN)
-		{
-			Gson gson = new Gson();
-			RegionChatMessage msg = gson.fromJson((JsonElement) message.data, RegionChatMessage.class);
-
-			String username = msg.username;
-			String receivedMsg = Text.removeTags(msg.message);
-
-			previousMessages.putIfAbsent(username, "");
-
-			// If someone is spamming the same message during a session, block it
-			if (previousMessages.get(username).equals(receivedMsg))
-			{
-				return;
-			}
-			previousMessages.put(username, receivedMsg);
-
-			final ChatMessageBuilder chatMessageBuilder = new ChatMessageBuilder()
-				.append(color, receivedMsg);
-
-			if (username.length() > 12)
-			{
-				return;
-			}
-
-			chatMessageManager.queue(QueuedMessage.builder()
-				.type(ChatMessageType.PUBLICCHAT)
-				.name(msg.symbol + msg.username)
-				.runeLiteFormattedMessage(chatMessageBuilder.build())
-				.build());
-		}
-	}
-
-	public void updateMessages(String name, String message)
-	{
-		previousMessages.putIfAbsent(name, "");
-
-		// If someone is spamming the same message during a session, block it
-		if (previousMessages.get(name).contains(message))
+		if (client.getGameState() != GameState.LOGGED_IN)
 		{
 			return;
 		}
+
+		RegionChatMessage msg = gson.fromJson((JsonElement) message.data, RegionChatMessage.class);
+
+		String username = msg.username;
+		String receivedMsg = Text.removeTags(msg.message);
+
+		if (!tryUpdateMessages(username, receivedMsg)) return;
+
+		final ChatMessageBuilder chatMessageBuilder = new ChatMessageBuilder()
+			.append(color, receivedMsg);
+
+		if (username.length() > 12)
+		{
+			return;
+		}
+
+		chatMessageManager.queue(QueuedMessage.builder()
+			.type(ChatMessageType.PUBLICCHAT)
+			.name(msg.symbol + msg.username)
+			.runeLiteFormattedMessage(chatMessageBuilder.build())
+			.build());
+	}
+
+	public boolean tryUpdateMessages(String name, String message)
+	{
+		String prevMessage = previousMessages.get(name);
+		// If someone is spamming the same message during a session, block it
+		if (message.equals(prevMessage))
+		{
+			return false;
+		}
 		previousMessages.put(name, message);
+
+		return true;
 	}
 
 	private void setupAblyInstances()
@@ -198,7 +198,7 @@ public class AblyManager
 				{
 					ablyRegionChannel.subscribe(this::handleMessage);
 				}
-				catch(AblyException err)
+				catch (AblyException err)
 				{
 					System.err.println(err.getMessage());
 				}
@@ -209,38 +209,37 @@ public class AblyManager
 
 		changingChannels = true;
 
-		if (ablyRegionChannel != null)
-		{
-			try
-			{
-				ablyRegionChannel.detach(new CompletionListener()
-				{
-					@Override
-					public void onSuccess()
-					{
-						ablyRegionChannel = ablyRealtime.channels.get(newChannelName);
-						subscribeToChannel();
-					}
-
-					@Override
-					public void onError(ErrorInfo reason)
-					{
-						System.err.println(reason.message);
-						changingChannels = false;
-					}
-				});
-			}
-			catch(AblyException err)
-			{
-				changingChannels = false;
-				System.err.println(err.getMessage());
-			}
-
-		}
-		else
+		if (ablyRegionChannel == null)
 		{
 			ablyRegionChannel = ablyRealtime.channels.get(newChannelName);
 			subscribeToChannel();
+			return;
+		}
+
+		try
+		{
+			ablyRegionChannel.unsubscribe();
+			ablyRegionChannel.detach(new CompletionListener()
+			{
+				@Override
+				public void onSuccess()
+				{
+					ablyRegionChannel = ablyRealtime.channels.get(newChannelName);
+					subscribeToChannel();
+				}
+
+				@Override
+				public void onError(ErrorInfo reason)
+				{
+					System.err.println(reason.message);
+					changingChannels = false;
+				}
+			});
+		}
+		catch (AblyException err)
+		{
+			changingChannels = false;
+			System.err.println(err.getMessage());
 		}
 	}
 
@@ -250,6 +249,7 @@ public class AblyManager
 		{
 			try
 			{
+				ablyRegionChannel.unsubscribe();
 				ablyRegionChannel.detach();
 			}
 			catch(AblyException err)
@@ -263,7 +263,7 @@ public class AblyManager
 	{
 		try
 		{
-		ablyRegionChannel.subscribe(this::handleMessage);
+			ablyRegionChannel.subscribe(this::handleMessage);
 		}
 		catch(AblyException err)
 		{

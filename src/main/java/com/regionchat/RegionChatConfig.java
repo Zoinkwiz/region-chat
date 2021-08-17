@@ -28,21 +28,12 @@ import java.awt.Color;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.ConfigSection;
 import net.runelite.client.ui.JagexColors;
 
 @ConfigGroup("regionchat")
 public interface RegionChatConfig extends Config
 {
-	@ConfigItem(
-		keyName = "sendToRegionChat",
-		name = "Send messages to region chats",
-		description = "Your messages sent whilst in a valid region will got to region chat"
-	)
-	default boolean sendToRegionChat()
-	{
-		return true;
-	}
-
 	@ConfigItem(
 		keyName = "regionChatColour",
 		name = "Region chat colour",
@@ -51,5 +42,78 @@ public interface RegionChatConfig extends Config
 	default Color regionChatColour()
 	{
 		return JagexColors.CHAT_PUBLIC_TEXT_OPAQUE_BACKGROUND;
+	}
+
+	@ConfigSection(
+		position = 1,
+		name = "Regions",
+		description = "Which regions to have chat in"
+	)
+	String regions = "regionsSection";
+
+	@ConfigItem(
+		keyName = "barbFishingBaRegion",
+		name = "Region chat at Barb Fishing",
+		description = "Join region chat at Barbarian Fishing locations",
+		section = regions
+	)
+	default boolean barbFishingBaRegion()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "temporossRegion",
+		name = "Region chat at Tempoross",
+		description = "Join region chat at Tempoross",
+		section = regions
+	)
+	default boolean temporossRegion()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "zeahRcRegion",
+		name = "Region chat whilst Zeah Runecrafting",
+		description = "Join region chat at the Zeah Runecrafting areas",
+		section = regions
+	)
+	default boolean zeahRcRegion()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "motherlodeMineRegion",
+		name = "Region chat in the Motherlode Mine",
+		description = "Join region chat at the Motherlode Mine",
+		section = regions
+	)
+	default boolean motherlodeMineRegion()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "sepulchreRegion",
+		name = "Region chat in the Sepulchre",
+		description = "Join region chat at the Sepulchre",
+		section = regions
+	)
+	default boolean sepulchreRegion()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "zalcanoRegion",
+		name = "Region chat at Zalcano",
+		description = "Join region chat at Zalcano",
+		section = regions
+	)
+	default boolean zalcanoRegion()
+	{
+		return true;
 	}
 }

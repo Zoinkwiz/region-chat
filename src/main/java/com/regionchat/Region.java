@@ -32,7 +32,14 @@ import net.runelite.api.coords.WorldPoint;
 public enum Region
 {
 	BARBARIAN_FISHING("barb-fishing-ba", new Zone(new WorldPoint(2495, 3474, 0), new WorldPoint(2527, 3532, 0))),
-	TEMPOROSS("tempoross", true, new Zone(new WorldPoint(3008, 2944, 0), new WorldPoint(3073, 3008, 0)));
+	TEMPOROSS("tempoross", true, new Zone(new WorldPoint(3008, 2944, 0), new WorldPoint(3073, 3008, 0))),
+	ZEAH_RC("zeahrc",
+		new Zone(new WorldPoint(1672, 3814, 0), new WorldPoint(1858, 3903, 0)),
+		new Zone(new WorldPoint(1636, 3848, 0), new WorldPoint(1671, 3902, 0))
+	),
+	MOTHERLODE_MINE("motherlode", new Zone(14936)),
+	ZALCANO("zalcano", new Zone(12116)),
+	SEPULCHRE("sepulchre", new Zone(new WorldPoint(2220, 5760, 0), new WorldPoint(2591, 6039, 3)));
 
 	@Getter
 	private final List<Zone> zones;
