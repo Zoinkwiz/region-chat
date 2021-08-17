@@ -24,16 +24,18 @@
  */
 package com.regionchat;
 
+import java.util.Arrays;
+import java.util.List;
 import lombok.Getter;
 import net.runelite.api.coords.WorldPoint;
 
 public enum Region
 {
 	BARBARIAN_FISHING("barb-fishing-ba", new Zone(new WorldPoint(2495, 3474, 0), new WorldPoint(2527, 3532, 0))),
-	TEMPOROSS("tempoross", new Zone(new WorldPoint(3008, 2944, 0), new WorldPoint(3073, 3008, 0)), true);
+	TEMPOROSS("tempoross", true, new Zone(new WorldPoint(3008, 2944, 0), new WorldPoint(3073, 3008, 0)));
 
 	@Getter
-	private final Zone zone;
+	private final List<Zone> zones;
 
 	@Getter
 	private final String name;
@@ -41,17 +43,17 @@ public enum Region
 	@Getter
 	private final boolean isInstance;
 
-	Region(String name, Zone zone)
+	Region(String name, Zone... zone)
 	{
 		this.name = name;
-		this.zone = zone;
+		this.zones = Arrays.asList(zone);
 		this.isInstance = false;
 	}
 
-	Region(String name, Zone zone, boolean isInstance)
+	Region(String name, boolean isInstance, Zone... zone)
 	{
 		this.name = name;
-		this.zone = zone;
+		this.zones = Arrays.asList(zone);
 		this.isInstance = isInstance;
 	}
 }

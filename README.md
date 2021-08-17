@@ -1,4 +1,4 @@
-# Region Chat
+# Ably Region Chat
 
 Ever tried to have a conversation with someone whilst Barbarian Fishing, only to have it cut short by an impromptu split due to the fishing spot moving? Separated at Tempoross due to being sent different ships?
 
@@ -16,3 +16,5 @@ This project makes use of [Ably](https://www.ably.com), a realtime messaging and
 When a player enters one of the regions which support Region Chat, they'll automatically enter the channel for that region for that world. They'll subscribe to messages from it, and any messages received will be shown in the chat, assuming the message wasn't already seen. Any messages you send in this region will also be sent to the Ably Channel, so others can see them.
 
 Due to Ably fundamentally being a Pub/Sub system, any identifying information (such as IP) will not be made accessible to other clients. The only thing other clients can see is the content of your message.
+
+This is an intentionally simple implementation of a 1-to-1 channel to region system without additional bells and whistles. It'd be possible to implement better authentication, division of regions, and more.

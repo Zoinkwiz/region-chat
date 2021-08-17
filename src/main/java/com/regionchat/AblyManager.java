@@ -50,7 +50,7 @@ import net.runelite.client.util.Text;
 
 @Slf4j
 @Singleton
-public class AblyConnection
+public class AblyManager
 {
 	private final Client client;
 
@@ -70,7 +70,7 @@ public class AblyConnection
 	private Channel ablyRegionChannel;
 
 	@Inject
-	public AblyConnection(Client client, RegionChatConfig config)
+	public AblyManager(Client client, RegionChatConfig config)
 	{
 		this.client = client;
 		this.config = config;
