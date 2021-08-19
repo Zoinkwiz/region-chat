@@ -25,6 +25,7 @@
  */
 package com.regionchat;
 
+import lombok.Getter;
 import static net.runelite.api.Constants.REGION_SIZE;
 import net.runelite.api.coords.WorldPoint;
 
@@ -90,5 +91,10 @@ public class Zone
 			&& worldPoint.getY() <= maxY
 			&& minPlane <= worldPoint.getPlane()
 			&& worldPoint.getPlane() <= maxPlane;
+	}
+
+	public WorldPoint getMinWorldPoint()
+	{
+		return new WorldPoint(minX, minY, minPlane);
 	}
 }

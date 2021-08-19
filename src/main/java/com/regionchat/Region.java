@@ -27,12 +27,14 @@ package com.regionchat;
 import java.util.Arrays;
 import java.util.List;
 import lombok.Getter;
+import net.runelite.api.Client;
+import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 
 public enum Region
 {
 	BARBARIAN_FISHING("barb-fishing-ba", new Zone(new WorldPoint(2495, 3474, 0), new WorldPoint(2527, 3532, 0))),
-	TEMPOROSS("tempoross", true, new Zone(new WorldPoint(3008, 2944, 0), new WorldPoint(3073, 3008, 0))),
+	TEMPOROSS("tempoross", true, new Zone(12078)),
 	ZEAH_RC("zeahrc",
 		new Zone(new WorldPoint(1672, 3814, 0), new WorldPoint(1858, 3903, 0)),
 		new Zone(new WorldPoint(1636, 3848, 0), new WorldPoint(1671, 3902, 0))
@@ -62,5 +64,19 @@ public enum Region
 		this.name = name;
 		this.zones = Arrays.asList(zone);
 		this.isInstance = isInstance;
+	}
+
+	public int getInstancedRegionID(WorldPoint realPlayerPoint, WorldPoint instancePlayerPoint)
+	{
+		WorldPoint minPoint = this.getZones().get(0).getMinWorldPoint();
+
+		int xDiff = instancePlayerPoint.getX() - minPoint.getX();
+		int yDiff = instancePlayerPoint.getY() - minPoint.getY();
+		int realMinPointX = realPlayerPoint.getX() - xDiff;
+		int realMinPointY = realPlayerPoint.getY() - yDiff;
+
+		WorldPoint realMinPoint = new WorldPoint(realMinPointX, realMinPointY, 0);
+
+		return realMinPoint.getRegionID();
 	}
 }

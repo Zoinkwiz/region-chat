@@ -90,7 +90,7 @@ public class RegionChatPlugin extends Plugin
 	public void onGameTick(GameTick event)
 	{
 		LocalPoint currentPos = client.getLocalPlayer().getLocalLocation();
-		int regionID = client.getLocalPlayer().getWorldLocation().getRegionID();
+		WorldPoint currentWorldPos = client.getLocalPlayer().getWorldLocation();
 
 		WorldPoint worldPoint = WorldPoint.fromLocalInstance(client, currentPos);
 
@@ -110,6 +110,7 @@ public class RegionChatPlugin extends Plugin
 
 			if (validRegion && region.getZones().stream().anyMatch((zone) -> zone.contains(worldPoint)))
 			{
+				int regionID = region.getInstancedRegionID(currentWorldPos, worldPoint);
 				foundRegion = true;
 				String channelName = "";
 				channelName += client.getWorld();
