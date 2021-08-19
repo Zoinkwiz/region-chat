@@ -116,4 +116,15 @@ public interface RegionChatConfig extends Config
 	{
 		return true;
 	}
+
+	@ConfigItem(
+		keyName = "sulliuscepRegion",
+		name = "Region chat at Sulliusceps",
+		description = "Join region chat at Sulliusceps",
+		section = regions
+	)
+	default boolean sulliuscepRegion()
+	{
+		return true;
+	}
 }

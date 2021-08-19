@@ -181,5 +181,6 @@ public class RegionChatPlugin extends Plugin
 		regionsToConfigs.put(Region.MOTHERLODE_MINE, config::motherlodeMineRegion);
 		regionsToConfigs.put(Region.ZALCANO, config::zalcanoRegion);
 		regionsToConfigs.put(Region.SEPULCHRE, config::sepulchreRegion);
+		regionsToConfigs.put(Region.SULLIUSCEP, config::sulliuscepRegion);
 	}
 }
