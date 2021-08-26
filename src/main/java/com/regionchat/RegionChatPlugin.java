@@ -142,7 +142,6 @@ public class RegionChatPlugin extends Plugin
 
 		if (wt.contains(WorldType.BOUNTY) ||
 			wt.contains(WorldType.DEADMAN) ||
-			wt.contains(WorldType.DEADMAN_TOURNAMENT) ||
 			wt.contains(WorldType.PVP) ||
 			inPvp
 		)
