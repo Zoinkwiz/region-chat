@@ -42,7 +42,6 @@ import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.VarbitChanged;
-import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
@@ -181,5 +180,7 @@ public class RegionChatPlugin extends Plugin
 		regionsToConfigs.put(Region.ZALCANO, config::zalcanoRegion);
 		regionsToConfigs.put(Region.SEPULCHRE, config::sepulchreRegion);
 		regionsToConfigs.put(Region.SULLIUSCEP, config::sulliuscepRegion);
+		regionsToConfigs.put(Region.ZEAH_CATACOMBS, config::zeahCatacombRegion);
+		regionsToConfigs.put(Region.WYRMS, config::wyrmRegion);
 	}
 }

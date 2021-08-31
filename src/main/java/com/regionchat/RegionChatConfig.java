@@ -44,6 +44,16 @@ public interface RegionChatConfig extends Config
 		return JagexColors.CHAT_PUBLIC_TEXT_OPAQUE_BACKGROUND;
 	}
 
+	@ConfigItem(
+		keyName = "shouldShowStateChanges",
+		name = "Show enter/leave messages for regions",
+		description = "Receive a message saying whenever you've entered/left a region"
+	)
+	default boolean shouldShowStateChanges()
+	{
+		return true;
+	}
+
 	@ConfigSection(
 		position = 1,
 		name = "Regions",
@@ -80,6 +90,28 @@ public interface RegionChatConfig extends Config
 		section = regions
 	)
 	default boolean zeahRcRegion()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "zeahCatacombRegion",
+		name = "Region chat whilst in the Zeah Catacombs",
+		description = "Join region chat at the Zeah Catacombs",
+		section = regions
+	)
+	default boolean zeahCatacombRegion()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "wyrmRegion",
+		name = "Region chat whilst at Wyrms",
+		description = "Join region chat at Wyrms",
+		section = regions
+	)
+	default boolean wyrmRegion()
 	{
 		return true;
 	}

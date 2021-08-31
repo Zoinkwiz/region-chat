@@ -42,7 +42,9 @@ public enum Region
 	MOTHERLODE_MINE("motherlode", new Zone(14936)),
 	ZALCANO("zalcano", new Zone(12116)),
 	SEPULCHRE("sepulchre", new Zone(new WorldPoint(2220, 5760, 0), new WorldPoint(2591, 6039, 3))),
-	SULLIUSCEP("sulliuscep", new Zone(new WorldPoint(3627, 3725, 0), new WorldPoint(3697, 3811, 0)));
+	SULLIUSCEP("sulliuscep", new Zone(new WorldPoint(3627, 3725, 0), new WorldPoint(3697, 3811, 0))),
+	ZEAH_CATACOMBS("zeah-catacombs", new Zone(new WorldPoint(1599, 9983, 0), new WorldPoint(1730, 10115, 0))),
+	WYRMS("wyrms", new Zone(new WorldPoint(1248, 10144, 0), new WorldPoint(1300, 10209, 0)));
 
 	@Getter
 	private final List<Zone> zones;

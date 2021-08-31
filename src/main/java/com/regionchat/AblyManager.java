@@ -30,6 +30,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.ably.lib.realtime.AblyRealtime;
 import io.ably.lib.realtime.Channel;
+import io.ably.lib.realtime.ChannelEvent;
 import io.ably.lib.realtime.ChannelState;
 import io.ably.lib.realtime.CompletionListener;
 import io.ably.lib.types.AblyException;
@@ -212,6 +213,7 @@ public class AblyManager
 		if (ablyRegionChannel == null)
 		{
 			ablyRegionChannel = ablyRealtime.channels.get(newChannelName);
+			setupAlerts(region);
 			subscribeToChannel();
 			return;
 		}
@@ -225,6 +227,7 @@ public class AblyManager
 				public void onSuccess()
 				{
 					ablyRegionChannel = ablyRealtime.channels.get(newChannelName);
+					setupAlerts(region);
 					subscribeToChannel();
 				}
 
@@ -241,6 +244,39 @@ public class AblyManager
 			changingChannels = false;
 			System.err.println(err.getMessage());
 		}
+	}
+
+	private void setupAlerts(Region region)
+	{
+		ablyRegionChannel.on(ChannelEvent.attached, stateChange -> {
+			if (!config.shouldShowStateChanges())
+			{
+				return;
+			}
+
+			final ChatMessageBuilder chatMessageBuilder = new ChatMessageBuilder()
+				.append("Entered new Ably Region Chat area: " + region.getName());
+
+			chatMessageManager.queue(QueuedMessage.builder()
+				.type(ChatMessageType.ENGINE)
+				.runeLiteFormattedMessage(chatMessageBuilder.build())
+				.build());
+		});
+
+		ablyRegionChannel.on(ChannelEvent.detached, stateChange -> {
+			if (!config.shouldShowStateChanges())
+			{
+				return;
+			}
+
+			final ChatMessageBuilder chatMessageBuilder = new ChatMessageBuilder()
+				.append("Left Ably Region Chat area: " + region.getName());
+
+			chatMessageManager.queue(QueuedMessage.builder()
+				.type(ChatMessageType.ENGINE)
+				.runeLiteFormattedMessage(chatMessageBuilder.build())
+				.build());
+		});
 	}
 
 	public void disconnectFromRegions()
