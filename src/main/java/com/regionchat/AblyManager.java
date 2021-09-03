@@ -214,23 +214,7 @@ public class AblyManager
 		try
 		{
 			ablyRegionChannel.unsubscribe();
-			ablyRegionChannel.detach(new CompletionListener()
-			{
-				@Override
-				public void onSuccess()
-				{
-					ablyRegionChannel = ablyRealtime.channels.get(newChannelName);
-					setupAlerts(region);
-					subscribeToChannel();
-				}
-
-				@Override
-				public void onError(ErrorInfo reason)
-				{
-					System.err.println(reason.message);
-					changingChannels = false;
-				}
-			});
+			ablyRegionChannel.detach(detatchListener(newChannelName, region));
 		}
 		catch (AblyException err)
 		{
@@ -270,6 +254,27 @@ public class AblyManager
 				.runeLiteFormattedMessage(chatMessageBuilder.build())
 				.build());
 		});
+	}
+
+	public CompletionListener detatchListener(String newChannelName, Region region)
+	{
+		return new CompletionListener()
+		{
+			@Override
+			public void onSuccess()
+			{
+				ablyRegionChannel = ablyRealtime.channels.get(newChannelName);
+				setupAlerts(region);
+				subscribeToChannel();
+			}
+
+			@Override
+			public void onError(ErrorInfo reason)
+			{
+				System.err.println(reason.message);
+				changingChannels = false;
+			}
+		};
 	}
 
 	public void disconnectFromRegions()
