@@ -195,14 +195,7 @@ public class AblyManager
 		{
 			if (ablyRegionChannel.state == ChannelState.detached)
 			{
-				try
-				{
-					ablyRegionChannel.subscribe(this::handleMessage);
-				}
-				catch (AblyException err)
-				{
-					System.err.println(err.getMessage());
-				}
+				subscribeToChannel();
 			}
 
 			return;
