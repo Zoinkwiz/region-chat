@@ -31,9 +31,13 @@ import net.runelite.api.coords.WorldPoint;
 
 public class Zone
 {
+	@Getter
 	private final int minX;
+	@Getter
 	private final int maxX;
+	@Getter
 	private final int minY;
+	@Getter
 	private final int maxY;
 	private int minPlane = 0;
 	private int maxPlane = 2;

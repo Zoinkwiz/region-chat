@@ -25,12 +25,15 @@
 package com.regionchat;
 
 import com.google.inject.Provides;
+import com.regionchat.overlay.RegionWidgetOverlay;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
+import javax.inject.Named;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
@@ -40,12 +43,14 @@ import net.runelite.api.WorldType;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.ChatMessage;
+import net.runelite.api.events.CommandExecuted;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.Text;
 
 @Slf4j
@@ -65,8 +70,19 @@ public class RegionChatPlugin extends Plugin
 	@Inject
 	private RegionChatConfig config;
 
+	@Inject
+	private OverlayManager overlayManager;
+
+	@Inject
+	private RegionWidgetOverlay regionWidgetOverlay;
+
 	@Getter
 	private final HashMap<String, ArrayList<String>> previousMessages = new HashMap<>();
+
+	@Getter
+	@Inject
+	@Named("developerMode")
+	private boolean developerMode;
 
 	boolean inPvp;
 
@@ -160,6 +176,21 @@ public class RegionChatPlugin extends Plugin
 
 		ablyManager.tryUpdateMessages(cleanedName, cleanedMessage);
 		ablyManager.publishMessage(cleanedMessage);
+	}
+
+	@Subscribe
+	public void onCommandExecuted(CommandExecuted commandExecuted)
+	{
+		if (developerMode && commandExecuted.getCommand().equals("regionchat"))
+		{
+			if (commandExecuted.getArguments().length == 0 ||
+				(Arrays.stream(commandExecuted.getArguments()).toArray()[0]).equals("hide"))
+			{
+				overlayManager.remove(regionWidgetOverlay);
+			}
+			else if ((Arrays.stream(commandExecuted.getArguments()).toArray()[0]).equals("show"))
+				overlayManager.add(regionWidgetOverlay);
+		}
 	}
 
 	@Provides
