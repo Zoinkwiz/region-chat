@@ -136,6 +136,7 @@ public class AblyManager
 		RegionChatMessage msg = gson.fromJson((JsonElement) message.data, RegionChatMessage.class);
 
 		String username = msg.username;
+		String symbol = getValidAccountIcon(msg.symbol);
 		String receivedMsg = Text.removeTags(msg.message);
 
 		if (!tryUpdateMessages(username, receivedMsg)) return;
@@ -150,7 +151,7 @@ public class AblyManager
 
 		chatMessageManager.queue(QueuedMessage.builder()
 			.type(ChatMessageType.PUBLICCHAT)
-			.name(msg.symbol + msg.username)
+			.name(symbol + msg.username)
 			.runeLiteFormattedMessage(chatMessageBuilder.build())
 			.build());
 	}
@@ -305,6 +306,14 @@ public class AblyManager
 		}
 
 		changingChannels = false;
+	}
+
+	private String getValidAccountIcon(String accountIcon)
+	{
+		if (accountIcon.equals("<img=2>") return accountIcon;
+		if (accountIcon.equals("<img=10>") return accountIcon;
+		if (accountIcon.equals("<img=3>") return accountIcon;
+		return "";
 	}
 
 	private String getAccountIcon()
