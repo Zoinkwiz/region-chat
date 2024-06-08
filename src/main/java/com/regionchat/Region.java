@@ -40,7 +40,7 @@ public enum Region
 		new Zone(new WorldPoint(1636, 3848, 0), new WorldPoint(1671, 3902, 0))
 	),
 	MOTHERLODE_MINE("motherlode", new Zone(14936)),
-	ZALCANO("zalcano", new Zone(12116)),
+	ZALCANO("zalcano", new Zone(12126)),
 	SEPULCHRE("sepulchre", new Zone(new WorldPoint(2220, 5760, 0), new WorldPoint(2591, 6039, 3))),
 	SULLIUSCEP("sulliuscep", new Zone(new WorldPoint(3627, 3725, 0), new WorldPoint(3697, 3811, 0))),
 	ZEAH_CATACOMBS("zeah-catacombs", new Zone(new WorldPoint(1599, 9983, 0), new WorldPoint(1730, 10115, 0))),
