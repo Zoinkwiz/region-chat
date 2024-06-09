@@ -39,6 +39,8 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.api.MenuAction;
+import net.runelite.api.MenuEntry;
 import net.runelite.api.Varbits;
 import net.runelite.api.WorldType;
 import net.runelite.api.coords.LocalPoint;
@@ -46,6 +48,7 @@ import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.CommandExecuted;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -79,9 +82,6 @@ public class RegionChatPlugin extends Plugin
 
 	@Inject
 	private RegionWidgetOverlay regionWidgetOverlay;
-
-	@Getter
-	private final HashMap<String, ArrayList<String>> previousMessages = new HashMap<>();
 
 	@Getter
 	@Inject
@@ -171,10 +171,15 @@ public class RegionChatPlugin extends Plugin
 		String cleanedName = Text.sanitize(event.getName());
 		String cleanedMessage = Text.removeTags(event.getMessage());
 
-
 		if ((event.getType() != ChatMessageType.PUBLICCHAT &&
-			event.getType() != ChatMessageType.MODCHAT) ||
-			!cleanedName.equals(client.getLocalPlayer().getName()))
+			event.getType() != ChatMessageType.MODCHAT))
+		{
+			return;
+		}
+
+		ablyManager.previousRealMessages.put(cleanedName, cleanedMessage);
+
+		if(!cleanedName.equals(client.getLocalPlayer().getName()))
 		{
 			return;
 		}
@@ -218,5 +223,27 @@ public class RegionChatPlugin extends Plugin
 		regionsToConfigs.put(Region.SULLIUSCEP, config::sulliuscepRegion);
 		regionsToConfigs.put(Region.ZEAH_CATACOMBS, config::zeahCatacombRegion);
 		regionsToConfigs.put(Region.WYRMS, config::wyrmRegion);
+	}
+
+	@Subscribe
+	public void onMenuEntryAdded(MenuEntryAdded event)
+	{
+		if (event.getOption() != null && event.getOption().equals("Message"))
+		{
+			addNewEntry(client.getMenuEntries());
+		}
+	}
+
+	private MenuEntry[] addNewEntry(MenuEntry[] menuEntries)
+	{
+		MenuEntry[] newMenuEntries = Arrays.copyOf(menuEntries, menuEntries.length + 1);
+
+		client.createMenuEntry(menuEntries.length - 1)
+			.setOption("Info")
+			.setTarget("Region Chat")
+			.onClick(ablyManager::printInfo)
+			.setType(MenuAction.RUNELITE);
+
+		return newMenuEntries;
 	}
 }

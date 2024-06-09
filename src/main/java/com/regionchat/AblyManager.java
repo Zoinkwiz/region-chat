@@ -44,6 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
+import net.runelite.api.MenuEntry;
 import net.runelite.api.WorldType;
 import net.runelite.client.chat.ChatMessageBuilder;
 import net.runelite.client.chat.ChatMessageManager;
@@ -59,6 +60,7 @@ public class AblyManager
 	private final Gson gson;
 
 	private final Map<String, String> previousMessages = new HashMap<>();
+	public final Map<String, String> previousRealMessages = new HashMap<>();
 
 	private final String CHANNEL_NAME_PREFIX = "regionchat";
 
@@ -72,12 +74,17 @@ public class AblyManager
 	private AblyRealtime ablyRealtime;
 	private Channel ablyRegionChannel;
 
+	private SpamMessages spamMessages;
+
+	private final String BUBBLE_ICON = "<img=19>";
+
 	@Inject
 	public AblyManager(Client client, RegionChatConfig config, Gson gson)
 	{
 		this.client = client;
 		this.config = config;
 		this.gson = gson;
+		this.spamMessages = new SpamMessages();
 	}
 
 	public void startConnection()
@@ -104,10 +111,11 @@ public class AblyManager
 			return;
 		}
 
+		if (spamMessages.isSpam(message)) return;
+
 		try
 		{
 			JsonObject msg = io.ably.lib.util.JsonUtils.object()
-				.add("symbol", getAccountIcon())
 				.add("username", client.getLocalPlayer().getName())
 				.add("message", message).toJson();
 
@@ -137,9 +145,10 @@ public class AblyManager
 		RegionChatMessage msg = gson.fromJson((JsonElement) message.data, RegionChatMessage.class);
 
 		String username = msg.username;
-		String symbol = getValidAccountIcon(msg.symbol);
 		String receivedMsg = Text.removeTags(msg.message);
 
+		if (spamMessages.isSpam(msg.message)) return;
+		if (isInvalidUsername(msg.username)) return;
 		if (!tryUpdateMessages(username, receivedMsg)) return;
 
 		final ChatMessageBuilder chatMessageBuilder = new ChatMessageBuilder()
@@ -149,10 +158,9 @@ public class AblyManager
 		{
 			return;
 		}
-
 		chatMessageManager.queue(QueuedMessage.builder()
 			.type(ChatMessageType.PUBLICCHAT)
-			.name(symbol + msg.username)
+			.name(BUBBLE_ICON + msg.username)
 			.runeLiteFormattedMessage(chatMessageBuilder.build())
 			.build());
 	}
@@ -165,6 +173,13 @@ public class AblyManager
 		{
 			return false;
 		}
+
+		String lastRealMessage = previousRealMessages.get(name);
+		if (message.equals(lastRealMessage))
+		{
+			return false;
+		}
+
 		previousMessages.put(name, message);
 
 		return true;
@@ -309,30 +324,21 @@ public class AblyManager
 		changingChannels = false;
 	}
 
-	private String getValidAccountIcon(String accountIcon)
+	// Checks for bits someone could insert in to be icons
+	// Important in case it's a JMod icon or something
+	private boolean isInvalidUsername(String username)
 	{
-		if (accountIcon.equals("<img=2>")) return accountIcon;
-		if (accountIcon.equals("<img=10>")) return accountIcon;
-		if (accountIcon.equals("<img=3>")) return accountIcon;
-		return "";
+		return username.toLowerCase().contains("<") || username.toLowerCase().startsWith("mod ");
 	}
 
-	private String getAccountIcon()
+	public void printInfo(MenuEntry menuEntry)
 	{
-		if (client.getWorldType().contains(WorldType.TOURNAMENT_WORLD))
-		{
-			return "<img=33>";
-		}
-		switch (client.getAccountType())
-		{
-			case IRONMAN:
-				return "<img=2>";
-			case HARDCORE_IRONMAN:
-				return "<img=10>";
-			case ULTIMATE_IRONMAN:
-				return "<img=3>";
-		}
+		final ChatMessageBuilder chatMessageBuilder = new ChatMessageBuilder()
+			.append("This is a message from the Region Chat Runelite Plugin.");
 
-		return "";
+		chatMessageManager.queue(QueuedMessage.builder()
+			.type(ChatMessageType.ENGINE)
+			.runeLiteFormattedMessage(chatMessageBuilder.build())
+			.build());
 	}
 }
