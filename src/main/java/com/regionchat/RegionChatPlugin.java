@@ -172,7 +172,8 @@ public class RegionChatPlugin extends Plugin
 		String cleanedMessage = Text.removeTags(event.getMessage());
 
 
-		if (event.getType() != ChatMessageType.PUBLICCHAT ||
+		if ((event.getType() != ChatMessageType.PUBLICCHAT &&
+			event.getType() != ChatMessageType.MODCHAT) ||
 			!cleanedName.equals(client.getLocalPlayer().getName()))
 		{
 			return;
