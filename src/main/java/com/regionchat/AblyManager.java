@@ -233,7 +233,7 @@ public class AblyManager
 			}
 
 			final ChatMessageBuilder chatMessageBuilder = new ChatMessageBuilder()
-				.append("Entered new Ably Region Chat area: " + region.getName());
+				.append("Entered new Region Chat area: " + region.getName());
 
 			chatMessageManager.queue(QueuedMessage.builder()
 				.type(ChatMessageType.ENGINE)
@@ -248,7 +248,7 @@ public class AblyManager
 			}
 
 			final ChatMessageBuilder chatMessageBuilder = new ChatMessageBuilder()
-				.append("Left Ably Region Chat area: " + region.getName());
+				.append("Left Region Chat area: " + region.getName());
 
 			chatMessageManager.queue(QueuedMessage.builder()
 				.type(ChatMessageType.ENGINE)

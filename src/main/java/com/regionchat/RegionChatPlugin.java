@@ -55,7 +55,7 @@ import net.runelite.client.util.Text;
 
 @Slf4j
 @PluginDescriptor(
-	name = "Ably Region Chat",
+	name = "Region Chat",
 	description = "Talk to others even if they go to another fishing spot!",
 	tags = { "chat" }
 )

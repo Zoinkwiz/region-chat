@@ -1,4 +1,4 @@
-# Ably Region Chat
+# Region Chat
 
 Ever tried to have a conversation with someone whilst Barbarian Fishing, only to have it cut short by an impromptu split due to the fishing spot moving? Separated at Tempoross due to being sent different ships?
 
