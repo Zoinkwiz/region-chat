@@ -38,9 +38,9 @@ import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.Point;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.widgets.ComponentID;
+import net.runelite.api.widgets.InterfaceID;
 import net.runelite.api.widgets.Widget;
-import net.runelite.api.widgets.WidgetID;
-import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -58,13 +58,13 @@ public class RegionWidgetOverlay extends OverlayPanel
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGHEST);
 		setLayer(OverlayLayer.MANUAL);
-		drawAfterInterface(WidgetID.WORLD_MAP_GROUP_ID);
+		drawAfterInterface(InterfaceID.WORLD_MAP);
 	}
 
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		Widget worldMapWidget = client.getWidget(WidgetInfo.WORLD_MAP_VIEW);
+		Widget worldMapWidget = client.getWidget(ComponentID.WORLD_MAP_MAPVIEW);
 
 		if (worldMapWidget == null)
 		{

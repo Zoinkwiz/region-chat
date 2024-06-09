@@ -56,7 +56,7 @@ public class AblyManager
 {
 	private final Client client;
 
-	private final Gson gson = new Gson();
+	private final Gson gson;
 
 	private final Map<String, String> previousMessages = new HashMap<>();
 
@@ -73,10 +73,11 @@ public class AblyManager
 	private Channel ablyRegionChannel;
 
 	@Inject
-	public AblyManager(Client client, RegionChatConfig config)
+	public AblyManager(Client client, RegionChatConfig config, Gson gson)
 	{
 		this.client = client;
 		this.config = config;
+		this.gson = gson;
 	}
 
 	public void startConnection()

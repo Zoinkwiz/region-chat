@@ -29,8 +29,8 @@ import net.runelite.api.Client;
 import net.runelite.api.Point;
 import net.runelite.api.RenderOverview;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.widgets.ComponentID;
 import net.runelite.api.widgets.Widget;
-import net.runelite.api.widgets.WidgetInfo;
 
 public class Perspective
 {
@@ -45,7 +45,7 @@ public class Perspective
 
 		float pixelsPerTile = ro.getWorldMapZoom();
 
-		Widget map = client.getWidget(WidgetInfo.WORLD_MAP_VIEW);
+		Widget map = client.getWidget(ComponentID.WORLD_MAP_MAPVIEW);
 		if (map != null)
 		{
 			Rectangle worldMapRect = map.getBounds();

@@ -24,6 +24,7 @@
  */
 package com.regionchat;
 
+import com.google.gson.Gson;
 import com.google.inject.Provides;
 import com.regionchat.overlay.RegionWidgetOverlay;
 import java.util.ArrayList;
@@ -66,6 +67,9 @@ public class RegionChatPlugin extends Plugin
 
 	@Inject
 	private Client client;
+
+	@Inject
+	private Gson gson;
 
 	@Inject
 	private RegionChatConfig config;
@@ -147,7 +151,7 @@ public class RegionChatPlugin extends Plugin
 	@Subscribe
 	public void onVarbitChanged(VarbitChanged e)
 	{
-		inPvp = client.getVar(Varbits.PVP_SPEC_ORB) == 1;
+		inPvp = client.getVarbitValue(Varbits.PVP_SPEC_ORB) == 1;
 	}
 
 	@Subscribe
