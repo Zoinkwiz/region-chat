@@ -310,9 +310,9 @@ public class AblyManager
 
 	private String getValidAccountIcon(String accountIcon)
 	{
-		if (accountIcon.equals("<img=2>") return accountIcon;
-		if (accountIcon.equals("<img=10>") return accountIcon;
-		if (accountIcon.equals("<img=3>") return accountIcon;
+		if (accountIcon.equals("<img=2>")) return accountIcon;
+		if (accountIcon.equals("<img=10>")) return accountIcon;
+		if (accountIcon.equals("<img=3>")) return accountIcon;
 		return "";
 	}
 
