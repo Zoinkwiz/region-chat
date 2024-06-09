@@ -228,7 +228,10 @@ public class RegionChatPlugin extends Plugin
 	@Subscribe
 	public void onMenuEntryAdded(MenuEntryAdded event)
 	{
-		if (event.getOption() != null && event.getOption().equals("Message"))
+		if (event.getOption() != null &&
+			event.getOption().equals("Message") &&
+			event.getTarget() != null &&
+			event.getTarget().contains(ablyManager.BUBBLE_ICON))
 		{
 			addNewEntry(client.getMenuEntries());
 		}

@@ -76,7 +76,7 @@ public class AblyManager
 
 	private SpamMessages spamMessages;
 
-	private final String BUBBLE_ICON = "<img=19>";
+	public final String BUBBLE_ICON = "<img=19>";
 
 	@Inject
 	public AblyManager(Client client, RegionChatConfig config, Gson gson)
